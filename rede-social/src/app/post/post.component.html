@@ -1,0 +1,38 @@
+<div class="panel panel-default">
+    <div class="panel-heading bg-secondary">
+        <div class="d-flex flex-row-reverse">
+            <button type="button" class="btn btn-default" (click)="excluir()">
+                <span class="glyphicon glyphicon-remove"> </span>
+            </button>
+            <button type="button" class="btn btn-default" (click)="editar()">
+                <span class="glyphicon glyphicon-pencil"></span>
+            </button>
+        </div>
+        {{ post.nomePessoa }}
+    </div>
+    <div class="panel-body">
+        <div *ngIf="!editarPost">{{ post.texto }}</div>
+        <textarea *ngIf="editarPost" [(ngModel)]="post.texto" rows="5" class="form-control"></textarea>
+    </div>
+    <div class="panel-footer bg-light">
+        <div *ngIf="!editarPost">
+            <button type="button" class="btn btn-default" (click)="curtida()">
+                <span class="glyphicon glyphicon-thumbs-up"></span>
+                <span *ngIf="post.qtdLikes > 0">
+                    {{ post.qtdLikes }}
+                </span>
+            </button>
+        </div>
+        <div *ngIf="editarPost">
+            <button type="button" class="btn btn-default" (click)="concluir()">
+                <span class="glyphicon glyphicon-ok"></span>
+            </button>
+            <button type="button" class="btn btn-default" (click)="cancelar()">
+                <span class="glyphicon glyphicon-remove"></span>
+            </button>
+        </div>
+        <div *ngIf="concluido" class="alert alert-success" role="alert">
+            O texto foi alterado!
+        </div>
+    </div>
+</div>
