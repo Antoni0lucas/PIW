@@ -39,10 +39,14 @@ module.exports.deletarUser = function (req, res) {
 
 module.exports.updateUser = function (req, res) {
     let id = req.params.id;
-    let user = users.find(user => (user._id == id));
-    if (user) {
-        users.put(user._id, user)
+
+}
+
+module.exports.retornaPosts = function (req, res) {
+    if (req.query.min_id) {
+        let list = posts.filter((el) => (el._id >= req.query.min_id));
+        res.json(list);
     } else {
-        res.status(404).send('Usuario não encontrado');
+        res.json(posts);
     }
 }

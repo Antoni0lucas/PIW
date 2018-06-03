@@ -11,7 +11,7 @@ module.exports = function () {
         extended: false
     }));
     usersRouter(app);
-    // postsRouter(app);
+    postsRouter(app);
     return app;
 };
 
