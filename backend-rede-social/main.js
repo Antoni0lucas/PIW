@@ -1,6 +1,8 @@
 let http = require('http');
-let app = require('./config/express')();
+let app = require('./config/express.js')();
+let db = require('./config/database.js');
 
 http.createServer(app).listen(app.get('port'), function(){
-    console.log('tô ouvindo na porta '+ app.get('port')); 
+    console.log('Servidor rodando');
 });
+db ('mongodb://localhost/back-redesocial');

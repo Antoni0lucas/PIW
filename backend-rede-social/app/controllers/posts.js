@@ -1,10 +1,19 @@
-let posts = [{ _id: 1, text: "Olá", likes: 2, idUser: "2030" },
-{ _id: 2, text: "Mundo", likes: 2, idUser: "3020" }];
+let Post = require('../models/posts.js');
+let bcrypt = require('bcrypt');
 
-module.exports.listarPosts = function (req, res) {
-    res.json(posts);
-};
-module.exports.obterPost = function (req, res) {
+module.exports.listarPosts = function(req, res){
+    let promise = Post.find().exec();
+    promise.then(
+        function(posts){
+            res.json(posts)
+        },
+        function(erro){
+            res.status(500).end();
+        }
+    );
+}
+
+module.exports.listaPostById = function (req, res) {
     let id = req.params.id;
     let post = posts.find(post => (post._id == id));
     if (post) {
@@ -13,9 +22,17 @@ module.exports.obterPost = function (req, res) {
         res.status(404).send('Post não encontrado');
     }
 }
-module.exports.inserirPost = function (req, res) {
-    posts.push(req.body);
-    res.status(200).send(req.body);
+
+module.exports.inserirPosts = function(req, res){
+    let promise = Post.create(req.body)
+    promise.then(
+        function(post){
+            res.status(201).json(post);
+        },
+        function(erro){
+            res.status(500).json(erro);
+        }
+    );
 }
 
 module.exports.deletePost = function (req, res) {

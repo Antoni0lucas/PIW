@@ -1,5 +1,5 @@
 {
-  "name": "vaidarcerto",
+  "name": "back-redesocial",
   "version": "1.0.0",
   "description": "",
   "main": "main.js",
@@ -10,7 +10,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^2.0.1",
     "body-parser": "^1.18.3",
-    "express": "^4.8.8"
+    "express": "^4.16.3",
+    "jsonwebtoken": "^8.2.2",
+    "mongoose": "^5.1.3"
   }
 }
