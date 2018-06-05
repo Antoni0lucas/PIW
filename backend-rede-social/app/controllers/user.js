@@ -1,7 +1,9 @@
 let User = require('../models/user.js');
+let Post = require('../models/posts.js');
 let bcrypt = require('bcrypt');
+let jwt = require('jsonwebtoken');
 
-module.exports.inserirUser = function(req, res){
+module.exports.inserirUser = function (req, res) {
     let user = new User({
         nome: req.body.nome,
         email: req.body.email,
@@ -9,66 +11,101 @@ module.exports.inserirUser = function(req, res){
     });
     let promise = User.create(user)
     promise.then(
-        function(users){
-            res.status(201).json(users);
+        function (users) {
+            res.status(201).json({
+                id: user._id,
+                nome: user.nome,
+                email: user.email
+            });
         },
-        function(erro){
-            res.status(500).json(erro);
+    ).catch(
+        function (error) {
+            res.status(500).send(error);
         }
-    );
+    )
 }
 
-module.exports.listarUsers = function(req, res){
-    
-    let promise = User.find();
+module.exports.listarUsers = function (req, res) {
+    let promise = User.find().exec();
     promise.then(
-        function(users){
-            res.json(users)
-        },
-        function(users){
-            res.status(500).end();
+        function (user) {
+            res.json(user);
         }
-    );
-}
+    ).catch(
+        function () {
+            res.status(404).send(erro);
+        }
+    )
+};
 
-module.exports.listarUserById = function(req, res){
+module.exports.retornarUserById = function (req, res) {
     let id = req.params.id;
-    let promise = User.findById(id);
+    let promise = User.findById(id).exec();
     promise.then(
-        function(users){
-            res.json(users)
-        },
-        function(users){
-            res.status(500).end();
+        function (user) {
+            res.status(201).json({
+                id: user._id,
+                nome: user.nome,
+                email: user.email
+            });
         }
-    );
-}
+    ).catch(
+        function (erro) {
+            res.status(500).send(erro);
+        }
+    )
+};
 
-module.exports.deletarUser = function (req, res) {
-    let id = req.params.id;
-    let user = users.find(user => (user._id == id));
-    if (user) {
-        let i = users.indexOf(user);
-        if (i != -1) {
-            users.splice(i, 1);
+module.exports.deleteUser = function (req, res) {
+    let payload = jwt.decode(req.query.token);
+
+    let promise = User.remove({ "_id": payload.id }).exec();
+    promise.then(
+        function (user) {
+            res.status(201).send("Removido");
         }
-        res.json(user);
-    }
-    else {
-        res.status(404).send('Usuario não encontrado');
-    }
+    ).catch(
+        function (erro) {
+            res.status(500).send(erro);
+        }
+    )
 };
 
 module.exports.updateUser = function (req, res) {
+    let payload = jwt.decode(req.query.token);
+    let user = new User ({
+        _id: payload.id, 
+        nome: req.body.nome,
+        email: req.body.email, 
+        senha: req.body.senha
+    })
+
+    let promise = User.findByIdAndUpdate(payload.id, req.body).exec();
+    promise.then(
+        function(user){
+            res.status(201).json({
+                id: user.id, 
+                nome: user.nome,
+                email: user.email
+            });
+        }
+    ).catch(
+        function(erro){
+            res.status(500).send(erro);
+        }
+    )
+};
+
+module.exports.postsUser = function (req, res) {
     let id = req.params.id;
-
-}
-
-module.exports.retornaPosts = function (req, res) {
-    if (req.query.min_id) {
-        let list = posts.filter((el) => (el._id >= req.query.min_id));
-        res.json(list);
-    } else {
-        res.json(posts);
-    }
+    let promise = Post.find({"userId": id}).exec();
+    promise.then(
+        function(posts){
+            res.status(201).json(posts);
+        }
+    ).catch(
+        function(erro){
+            res.status(500).send(erro);
+        }
+    )
 }
