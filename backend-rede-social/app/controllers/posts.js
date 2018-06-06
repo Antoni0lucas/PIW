@@ -20,27 +20,28 @@ module.exports.retornarPostById = function (req, res) {
         function (post) {
             res.json(post);
         },
+    ).catch(
         function (erro) {
             res.status(500).end();
         }
     )
-}
+};
 
 module.exports.inserirPosts = function (req, res) {
     let payload = jwt.decode(req.query.token);
     let post = new Post({
         texto: req.body.texto,
         likes: req.body.likes,
-        userId: payload.id
+        user: payload.id
     });
 
     let promise = Post.create(post);
     promise.then(
-        function(post){
+        function (post) {
             res.status(201).json(post);
         }
     ).catch(
-        function(erro){
+        function (erro) {
             res.status(500).send(erro);
         }
     );
@@ -67,7 +68,6 @@ module.exports.deletePost = function (req, res) {
 
 module.exports.updatePost = function (req, res) {
     let id = req.params.id;
-
     let post = new Post({
         _id: id,
         texto: req.body.texto,
@@ -75,9 +75,7 @@ module.exports.updatePost = function (req, res) {
         userId: req.body.userId
 
     });
-
     let payload = jwt.decode(req.query.token);
-
     let promise = Post.findByIdAndUpdate(id, post);
     promise.then(
         function (post) {
